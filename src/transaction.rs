@@ -93,7 +93,7 @@ pub trait Transaction: Sized {
     /// `Error::NotFound` will be returned.
     fn get<'txn, K>(&'txn self, database: Database, key: &K) -> Result<&'txn [u8]>
     where
-        K: AsRef<[u8]>,
+        K: AsRef<[u8]> + ?Sized,
     {
         let key = key.as_ref();
         let mut key_val: ffi::MDB_val = ffi::MDB_val {
@@ -302,8 +302,8 @@ impl<'env> RwTransaction<'env> {
     /// item if duplicates are allowed (`DatabaseFlags::DUP_SORT`).
     pub fn put<K, D>(&mut self, database: Database, key: &K, data: &D, flags: WriteFlags) -> Result<()>
     where
-        K: AsRef<[u8]>,
-        D: AsRef<[u8]>,
+        K: AsRef<[u8]> + ?Sized,
+        D: AsRef<[u8]> + ?Sized,
     {
         let key = key.as_ref();
         let data = data.as_ref();
@@ -329,7 +329,7 @@ impl<'env> RwTransaction<'env> {
         flags: WriteFlags,
     ) -> Result<&'txn mut [u8]>
     where
-        K: AsRef<[u8]>,
+        K: AsRef<[u8]> + ?Sized,
     {
         let key = key.as_ref();
         let mut key_val: ffi::MDB_val = ffi::MDB_val {
@@ -364,7 +364,7 @@ impl<'env> RwTransaction<'env> {
     /// database.
     pub fn del<K>(&mut self, database: Database, key: &K, data: Option<&[u8]>) -> Result<()>
     where
-        K: AsRef<[u8]>,
+        K: AsRef<[u8]> + ?Sized,
     {
         let key = key.as_ref();
         let mut key_val: ffi::MDB_val = ffi::MDB_val {
